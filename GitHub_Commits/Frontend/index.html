@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>GitHub Commits</title>
+</head>
+<body>
+    <div class="container">
+        <h1>GitHub Commit Explorer</h1>
+
+        <div class="form-section">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="owner">Owner</label>
+                    <input id="owner" type="text" class="input" placeholder="e.g. dotnet">
+                </div>
+                <div class="form-group">
+                    <label for="repo">Repo</label>
+                    <input id="repo" type="text" class="input" placeholder="e.g. runtime">
+                </div>
+            </div>
+            <div class="form-buttons">
+                <button class="btn submit-btn" id="searchBtn">Search</button>
+                <button class="btn clear-btn" id="clearBtn">Clear results</button>
+            </div>
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        document.getElementById("searchBtn").onclick = async function () {
+            const owner = document.getElementById("owner").value.trim();
+            const repo = document.getElementById("repo").value.trim();
+            const results = document.getElementById("results");
+
+            if (!owner || !repo) {
+                showError(results, "Owner and repo are required.");
+                return;
+            }
+
+            try {
+                const res = await fetch(`/?owner=${encodeURIComponent(owner)}&repo=${encodeURIComponent(repo)}`);
+                const data = await res.json();
+
+                if (!res.ok) {
+                    showError(results, data.message || res.statusText);
+                    return;
+                }
+
+                showResult(results, data);
+            } catch (err) {
+                showError(results, err.message);
+            }
+        };
+
+        document.getElementById("clearBtn").onclick = function () {
+            document.getElementById("results").innerHTML = "";
+        };
+
+        function showResult(container, data) {
+            const card = document.createElement("div");
+            card.className = "result-card";
+
+            let rows = "";
+            for (const c of data.contributors)
+                rows += `<tr><td><a href="https://github.com/${c.login}" target="_blank">${c.login}</a></td><td>${c.commits}</td></tr>`;
+
+            card.innerHTML = `
+                <h2>
+                    <a href="https://github.com/${data.owner}/${data.repo}" target="_blank">${data.owner}/${data.repo}</a>
+                    ${data.fromCache ? '<span class="cache-badge">cached</span>' : ''}
+                </h2>
+                <table>
+                    <thead><tr><th>Contributor</th><th>Commits</th></tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+                <div class="result-footer">
+                    <span>Total commits: <strong>${data.totalCommits}</strong></span>
+                    <span>${data.totalTimeMs} ms</span>
+                </div>`;
+
+            container.prepend(card);
+        }
+
+        function showError(container, message) {
+            const card = document.createElement("div");
+            card.className = "result-card error-card";
+            card.innerHTML = `<p class="error-msg">${message}</p>`;
+            container.prepend(card);
+        }
+    </script>
+</body>
+</html>
