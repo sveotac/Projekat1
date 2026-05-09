@@ -35,7 +35,7 @@ Worker threads
 
 1. Kreirajte `.env` fajl u `GitHub_Commits/`:
    ```
-   GH_TOKEN=vas_github_licni_pristupni_token
+   GH_TOKEN=vas_github_token
    ```
    Token nije obavezan za javne repozitorijume, ali sprečava ograničenje brzine zahteva.
 
