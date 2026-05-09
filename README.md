@@ -67,6 +67,6 @@ Odgovor:
 }
 ```
 
-## Zahtevi
+## Zahteva
 
 - .NET 10
