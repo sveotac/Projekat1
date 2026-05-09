@@ -24,8 +24,8 @@ public class Program
         GitHubService.Initialize(Environment.GetEnvironmentVariable("GH_TOKEN"));
 
         var os = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "Windows" :
-                 RuntimeInformation.IsOSPlatform(OSPlatform.Linux)   ? "Linux"   :
-                 RuntimeInformation.IsOSPlatform(OSPlatform.OSX)     ? "macOS"   : "Unknown OS";
+                 RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "Linux" :
+                 RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? "macOS" : "Unknown OS";
         Log.Info($"Running on: {os} ({RuntimeInformation.OSDescription})");
 
         for (int i = 0; i < WorkerCount; i++)
@@ -145,9 +145,9 @@ public class Program
         var contentType = Path.GetExtension(fileName).ToLower() switch
         {
             ".html" => "text/html; charset=utf-8",
-            ".css"  => "text/css; charset=utf-8",
-            ".js"   => "application/javascript; charset=utf-8",
-            _       => "application/octet-stream"
+            ".css" => "text/css; charset=utf-8",
+            ".js" => "application/javascript; charset=utf-8",
+            _ => "application/octet-stream"
         };
 
         var bytes = await File.ReadAllBytesAsync(filePath);

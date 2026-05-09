@@ -7,7 +7,7 @@ public static class Cache
     private static readonly object Lock = new();
     private static readonly Dictionary<string, CacheEntry> Dict = new();
     private static readonly HashSet<string> InProgress = new();
-    private const int MaxEntries = 100;
+    private const int MaxEntries = 5;
 
     // Atomically checks the cache and decides what this thread should do.
     // Hit         — entry is in cache, returned via out param
