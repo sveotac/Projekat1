@@ -42,7 +42,7 @@ public static class GitHubService
             }
         }
 
-        // 202 (computing) or empty stats — fall back to commits endpoint
+        // 202 (computing) ili nema podataka; fallback na drugu funkciju za fetch
         return await FetchCommitsByPage(owner, repo);
     }
 

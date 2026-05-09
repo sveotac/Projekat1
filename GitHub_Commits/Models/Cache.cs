@@ -9,10 +9,10 @@ public static class Cache
     private static readonly HashSet<string> InProgress = new();
     private const int MaxEntries = 5;
 
-    // Atomically checks the cache and decides what this thread should do.
-    // Hit         — entry is in cache, returned via out param
-    // ShouldFetch — nobody is fetching this key yet, this thread should fetch
-    // Wait        — another thread is already fetching, this thread should wait
+    // Proverava se keš i odlučuje se šta nit treba da radi
+    // Hit - podaci su u kešu i vraćaju se uz pomoć out parametra
+    // ShouldFetch — nijedna nit ne pribavlja podatke za ovaj ključ, treba da se fetch-uje
+    // Wait - druga nit već pribavlja informacije, ova treba da sačeka
     public static CacheStatus Check(string key, out CacheEntry? entry)
     {
         lock (Lock)
@@ -35,8 +35,8 @@ public static class Cache
         }
     }
 
-    // Blocks the calling thread until the in-progress fetch for key completes.
-    // Returns the cache entry if the fetch succeeded, null if it failed.
+    // Blokira pozivajuću nit dok se poziv za fetch koji je u toku ne završi
+    // Vraća podatke iz keša ukoliko ih ima, ukoliko ne, vraća null
     public static CacheEntry? WaitForResult(string key)
     {
         lock (Lock)
@@ -61,7 +61,7 @@ public static class Cache
         }
     }
 
-    // Called when a fetch fails — releases waiting threads so they can handle the error.
+    // Zove se kad fetch ne uspe i pušta sve ostale niti koji čekaju
     public static void CancelInProgress(string key)
     {
         lock (Lock)
